@@ -1,5 +1,7 @@
 <?php
 
+namespace BSBot\Game;
+
 class GameConfig {
     private const LETTER_COORD = [
         'player' => [
