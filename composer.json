@@ -1,7 +1,8 @@
 {
     "require": {
         "imagine/imagine": "^1.2",
-        "vkcom/vk-php-sdk": "^5.80"
+        "vkcom/vk-php-sdk": "^5.80",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
