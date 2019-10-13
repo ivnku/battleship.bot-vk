@@ -1,0 +1,11 @@
+{
+    "require": {
+        "imagine/imagine": "^1.2",
+        "vkcom/vk-php-sdk": "^5.80"
+    },
+    "autoload": {
+        "psr-4": {
+            "BSBot\\": "/src"
+        }
+    }
+}
