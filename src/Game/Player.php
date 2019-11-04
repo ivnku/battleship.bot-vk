@@ -9,7 +9,7 @@ class Player
      * VK id of a player
      * @var string
      */
-    public $vk_id;
+    public $player_id;
     
     /**
      * String like "Б2"
@@ -36,9 +36,9 @@ class Player
      */
     public $last_action;
     
-    public function __construct(string $vk_id, string $move, Field $field, array $opponent_field, array $last_action)
+    public function __construct(string $player_id, string $move, Field $field, array $opponent_field, array $last_action)
     {
-        $this->vk_id          = $vk_id;
+        $this->player_id      = $player_id;
         $this->move           = $move;
         $this->field          = $field;
         $this->opponent_field = $opponent_field;
