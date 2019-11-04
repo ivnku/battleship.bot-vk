@@ -30,7 +30,6 @@ class Field
             while ($isPlaced == false) {
                 $letter = array_rand($currShipEmpty);
                 $number = array_rand($currShipEmpty[$letter]);
-                // 1 - ship, 0 - empty, 2 - bullseye, 3 - miss
                 if (! $isPlaced = $this->findPosition(['letter' => $letter, 'number' => $number], $ship, $empty)) {
                     unset($currShipEmpty[$letter][$number]);
                 }
