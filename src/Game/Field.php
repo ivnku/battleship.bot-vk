@@ -121,15 +121,6 @@ class Field
      */
     public function placeShip(array $shipCoords, array &$empty): void
     {
-        $shipLen = count($shipCoords);
-        
-        $isVertical = false; // if ship is single deck so $isVertical can be whatever
-        if ($shipLen > 1) { // if ship is not single deck we check if it's vertical
-            if ($shipCoords[0][0] - $shipCoords[1][0] == 0) {
-                $isVertical = true;
-            }
-        }
-        
         $offset = [-1, 0, 1]; // the offset for one of the coordinates
         
         foreach ($shipCoords as $coords) {
