@@ -4,7 +4,7 @@ namespace BSBot\Game;
 
 class Field
 {
-    public $field = [];
+    public $map = [];
     public $ships = [];
     
     public function __construct()
@@ -18,10 +18,10 @@ class Field
     public function generateShips(): void
     {
         // every array is a letter and every item is a number of the field
-        $this->field = array_fill(0, 10, [0,0,0,0,0,0,0,0,0,0]);
+        $this->map = array_fill(0, 10, [0,0,0,0,0,0,0,0,0,0]);
 
         $ships = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
-        $empty = $this->field; // empty array for getting random point from it
+        $empty = $this->map; // empty array for getting random point from it
         
         foreach ($ships as $ship) {
             $isPlaced = false;
@@ -48,7 +48,7 @@ class Field
      *      V
      * @param array $point - the found empty point
      * @param int $ship - the number of a ship's decks
-     * @param array $empty - array of empty cells of the field
+     * @param array $empty - array of empty cells of the map
      * @return bool - found or not
      */
     private function findPosition(array $point, int $ship, array &$empty): bool 
@@ -103,17 +103,17 @@ class Field
     
     /**
      * Once position was found we remove coordinates of the ship from $empty as well as
-     * coordinates which are around the ship. Also we fill $this->field with the new ship
+     * coordinates which are around the ship. Also we fill $this->map with the new ship
      * 
      * @param array $shipCoords - coordinates of the placed ship
-     * @param array $empty - array of empty cells of the field
+     * @param array $empty - array of empty cells of the map
      */
     public function placeShip(array $shipCoords, array &$empty): void
     {
         $offset = [-1, 0, 1]; // the offset for one of the coordinates
         
         foreach ($shipCoords as $coords) {
-            $this->field[$coords[0]][$coords[1]] = 1; // saving ship coords to the field variable
+            $this->map[$coords[0]][$coords[1]] = 1; // saving ship coords to the map variable
         }
         $this->ships[] = $shipCoords;
         
