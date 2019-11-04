@@ -5,6 +5,7 @@ namespace BSBot\Game;
 class Field
 {
     public $field = [];
+    public $ships = [];
     
     public function __construct()
     {
@@ -17,18 +18,7 @@ class Field
     public function generateShips(): void
     {
         // every array is a letter and every item is a number of the field
-        $this->field = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ];
+        $this->field = array_fill(0, 10, [0,0,0,0,0,0,0,0,0,0]);
 
         $ships = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
         $empty = $this->field; // empty array for getting random point from it
@@ -126,6 +116,7 @@ class Field
         foreach ($shipCoords as $coords) {
             $this->field[$coords[0]][$coords[1]] = 1; // saving ship coords to the field variable
         }
+        $this->ships[] = $shipCoords;
         
         foreach ($shipCoords as $coords) {
             $letter = $coords[0];
