@@ -2,6 +2,8 @@
 
 namespace BSBot\Game;
 
+use BSBot\services\Drawer\Drawer;
+
 class Field
 {
     public $map = [];
@@ -14,8 +16,10 @@ class Field
     
     /**
      * Generating of the initial field with ships
+     * 
+     * @param string $player_id - vk id of a player
      */
-    public function generateShips(): void
+    public function generateShips(string $player_id): void
     {
         // every array is a letter and every item is a number of the field
         $this->map = array_fill(0, 10, [0,0,0,0,0,0,0,0,0,0]);
@@ -36,6 +40,8 @@ class Field
                 
             }
         }
+        $drawer = new Drawer();
+        $drawer->drawShips($this->ships, $player_id);
     }
     
     /**
