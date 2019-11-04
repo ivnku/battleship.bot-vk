@@ -2,6 +2,7 @@
 
 namespace BSBot\services\Drawer;
 
+use BSBot\Game\GameConfig;
 use Imagine\Imagick\Imagine;
 use Imagine\Image\Point;
 
@@ -20,42 +21,78 @@ class Drawer
     public function __construct()
     {
         $this->imagine = new Imagine();
-        $this->field   = $this->imagine->open(IMAGES . '/initial_field.png');
-    }
-    
-    public function saveField(string $player_id, string $opponent_id): void
-    {
-        $this->field->save(SESSIONS . "/{$player_id}_{$opponent_id}.png");
+        //$this->field   = $this->imagine->open(IMAGES . '/initial_field.png'); //TODO remove from here and open image from sessions
     }
     
     /**
-     * Draws a ship of the specific type on the field object
+     * Saves field to the session directory
      * 
-     * @param int $type - type of ship
-     * @param int $x
-     * @param int $y
-     * @param $position - vertical or horizontal
+     * @param string $player_id
      */
-    public function drawShip(int $type, int $x, int $y, string $position): void
+    public function saveField(string $player_id): void
     {
-        $point = new Point($x, $y);
-        $ship = $this->imagine->open(IMAGES . "/{$type}_ship.png");
-        if ($position == 'vertical') {
-            $ship = $ship->rotate(90);
-        }
+        $this->field->save(SESSIONS . "/{$player_id}.png");
+    }
+    
+    /**
+     * Draws ships on the initial field picture. Every ship is drawn starting 
+     * in a one point either from the up to the down or from the left to the right
+     * 
+     * @param array $ships - array of ships' coordinates
+     * @param string $player_id - vk id of player
+     */
+    public function drawShips(array $ships, string $player_id): void
+    {
+        $this->field = $this->imagine->open(IMAGES . '/initial_field.png');
         
-        $this->field->paste($ship, $point);
+        foreach ($ships as $ship) {
+            if (count($ship) == 1) {
+                $xy = $this->getPictureCoords('player', $ship[0]);
+                $point = new Point($xy[0], $xy[1]);
+                $shipPic = $this->imagine->open(IMAGES . "/1_ship.png");
+                $this->field->paste($shipPic, $point);
+            } else {
+                
+                $isVertical = $ship[0][0] == $ship[1][0];
+                $xy = [];
+                
+                if ($isVertical) {
+                    
+                    if (end($ship)[1] - $ship[0][1] < 0) { // means first point is below the last
+                        $xy = $this->getPictureCoords('player', end($ship));
+                    } else {
+                        $xy = $this->getPictureCoords('player', $ship[0]);
+                    }
+                    $shipPic = $this->imagine->open(IMAGES . "/".count($ship)."_ship.png");
+                    $shipPic = $shipPic->rotate(90);
+                    
+                } else {
+                    
+                    if(end($ship)[0] - $ship[0][0] < 0) {
+                        $xy = $this->getPictureCoords('player', end($ship));
+                    } else {
+                        $xy = $this->getPictureCoords('player', $ship[0]);
+                    }
+                    $shipPic = $this->imagine->open(IMAGES . "/".count($ship)."_ship.png");
+                }
+                
+                $point = new Point($xy[0], $xy[1]);
+                $this->field->paste($shipPic, $point);
+            }
+        }
+        $this->saveField($player_id);
     }
     
     /**
      * Draws a hit (a cross) on the field object
      * 
-     * @param int $x
-     * @param int $y
+     * @param string $side - a player's or an opponent's field
+     * @param string $playerMove - the point which user has chosen (e.g. "Б2")
      */
-    public function drawHit(int $x, int $y): void
+    public function drawHit(string $side, string $playerMove): void
     {
-        $point = new Point($x, $y);
+        $xy = $this->getPictureCoords($side, $playerMove);
+        $point = new Point($xy[0], $xy[1]);
         $hit = $this->imagine->open(IMAGES . '/hit.png');
         $this->field->paste($hit, $point);
     }
@@ -63,13 +100,31 @@ class Drawer
     /**
      * Draws a miss (a point) on the field object
      * 
-     * @param int $x
-     * @param int $y
+     * @param string $side - a player's or an opponent's field
+     * @param string $playerMove - the point which user has chosen (e.g. "Б2")
      */
-    public function drawMiss(int $x, int $y): void
+    public function drawMiss(string $side, string $playerMove): void
     {
-        $point = new Point($x, $y);
+        $xy = $this->getPictureCoords($side, $playerMove);
+        $point = new Point($xy[0], $xy[1]);
         $miss = $this->imagine->open(IMAGES . '/miss.png');
         $this->field->paste($miss, $point);
+    }
+    
+    /**
+     * Get 'x' and 'y' coordinates on the picture from player input or from two indexes of map
+     * 
+     * @param string $side - a player's or an opponent's field
+     * @param string|array $input - the point which user has chosen (e.g. "Б2") 
+     * or array of the player's field array
+     * @return array
+     */
+    public function getPictureCoords(string $side, $input): array
+    {
+        if(gettype($input) == 'string') {
+            return [GameConfig::LETTER_COORD[$side][$input[0]], GameConfig::NUMBERS_COORD[$input[1]]];
+        } else {
+            return [GameConfig::X_INDEX_COORD[$side][$input[0]], GameConfig::Y_INDEX_COORD[$input[1]]];
+        }
     }
 }
